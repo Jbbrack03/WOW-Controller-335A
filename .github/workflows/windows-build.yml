@@ -13,7 +13,7 @@ jobs:
         run: |
           msbuild controller_injector/controller_dll/controller_dll.vcxproj /p:Configuration=Release
       - name: Upload DLL Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: controller_dll
           path: controller_injector/controller_dll/Release/controller_dll.dll
