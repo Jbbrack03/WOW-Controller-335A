@@ -121,4 +121,15 @@ void DrawControllerPrompts(const std::vector<std::pair<std::string, PromptAnimSt
     }
 }
 
+// ---- Animated Focus Border (smooth transition) ----
+void DrawAnimatedFocusBorder(const FocusTransitionState& state, unsigned int color, IDirect3DDevice9* dev, const FocusAnimState* anim) {
+    // Interpolate position and size
+    float t = state.animating ? state.t : 1.0f;
+    int x = static_cast<int>(state.startX + (state.endX - state.startX) * t);
+    int y = static_cast<int>(state.startY + (state.endY - state.startY) * t);
+    int w = static_cast<int>(state.startW + (state.endW - state.startW) * t);
+    int h = static_cast<int>(state.startH + (state.endH - state.startH) * t);
+    DrawFocusBorder(x, y, w, h, color, dev, anim);
+}
+
 #endif

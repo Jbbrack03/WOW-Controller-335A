@@ -52,9 +52,14 @@ TEST(SettingsOverlayTest, RenderSettingsOverlayWithPrompts) {
         {"D-pad", PromptAnimState{.time=0.0f, .active=false}}
     };
     DrawControllerPrompts(prompts, 200, 200, 40, dev.get());
-    // Focus highlight on first option
+    // Smooth animated focus highlight transitioning from first to second option
+    FocusTransitionState focusTrans;
+    focusTrans.startX = 85; focusTrans.startY = 95; focusTrans.startW = 120; focusTrans.startH = 28; // "Sound: On"
+    focusTrans.endX = 85; focusTrans.endY = 125; focusTrans.endW = 150; focusTrans.endH = 28; // "Vibration: Off"
+    focusTrans.t = 0.5f; // Midway through transition
+    focusTrans.animating = true;
     FocusAnimState focusAnim; focusAnim.time = 0.3f;
-    DrawFocusBorder(85, 95, 120, 28, OverlayColors::FOCUS, dev.get(), &focusAnim);
+    DrawAnimatedFocusBorder(focusTrans, OverlayColors::FOCUS, dev.get(), &focusAnim);
     dev->EndScene();
     SUCCEED();
 }

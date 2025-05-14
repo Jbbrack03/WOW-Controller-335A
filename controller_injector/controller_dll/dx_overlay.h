@@ -30,6 +30,17 @@ namespace OverlayConfig {
 }
 
 // ---- Animation State for Focus Border ----
+// ---- Animated Focus Transition State ----
+struct FocusTransitionState {
+    int startX, startY, startW, startH;
+    int endX, endY, endW, endH;
+    float t; // 0.0=start, 1.0=end
+    bool animating;
+    FocusTransitionState()
+        : startX(0), startY(0), startW(0), startH(0),
+          endX(0), endY(0), endW(0), endH(0), t(1.0f), animating(false) {}
+};
+
 struct FocusAnimState {
     float time; // time in seconds, for animation
     FocusAnimState() : time(0.0f) {}
@@ -46,7 +57,10 @@ struct OverlayAnimState {
 void DrawRect(int x, int y, int w, int h, unsigned int color, IDirect3DDevice9* dev);
 void DrawShadowRect(int x, int y, int w, int h, int offset, unsigned int color, IDirect3DDevice9* dev);
 void DrawTextLabel(const std::string& text, int x, int y, unsigned int color, IDirect3DDevice9* dev);
+// Draw animated focus border with optional transition
 void DrawFocusBorder(int x, int y, int w, int h, unsigned int color, IDirect3DDevice9* dev, const FocusAnimState* anim = nullptr);
+void DrawAnimatedFocusBorder(const FocusTransitionState& state, unsigned int color, IDirect3DDevice9* dev, const FocusAnimState* anim = nullptr);
+
 void DrawGoldBorder(int x, int y, int w, int h, int thickness, unsigned int color, IDirect3DDevice9* dev);
 void DrawOverlayBox(int x, int y, int w, int h, const OverlayAnimState* anim, IDirect3DDevice9* dev);
 // Animation state for controller prompt (e.g., glow or scale effect)
