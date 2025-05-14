@@ -38,9 +38,6 @@
     <ClCompile Include="DllMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="config_template.ini" />
     <None Include="BUILD.md" />
   </ItemGroup>
