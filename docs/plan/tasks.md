@@ -1,5 +1,27 @@
 # Task Breakdown (Agent-Ready)
 
+## Recent Progress (2025-05-14)
+- Implemented full cross-platform rendering abstraction (`dx_overlay`) for all UI elements.
+- DirectX 9 overlay rendering (rectangles, text, focus highlights) now functional for Windows builds.
+- All non-graphical, platform-agnostic tests pass on Mac using stubs.
+- Documentation and build instructions updated for new rendering architecture.
+- Accessibility features are not required for this project and have not been implemented.
+
+## Next Engineering Steps
+- Further UI/UX polish (visual and interaction improvements, not accessibility-specific).
+  - Review overlay color schemes and highlight consistency.
+  - Implement smoother focus transitions (basic animation).
+  - Refine overlay positioning (padding/margin review).
+  - Ensure code structure allows for easy future customization.
+- Integration/system-level graphical tests.
+  - Scaffold graphical test for overlay rendering output (Windows).
+  - Integrate screenshot/pixel-diff comparison to baseline images.
+  - Ensure Mac stub builds pass all non-graphical tests in CI/CD.
+- Additional graphical features or menu screens as needed.
+  - Implement overlay animation (fade/slide transitions).
+  - Add new menu screens or overlays as required by UX review.
+  - Review and refactor code for maintainability and extensibility.
+
 ## Engineering Tasks (with Details)
 
 ### 1. DLL Injector Proof-of-Concept
