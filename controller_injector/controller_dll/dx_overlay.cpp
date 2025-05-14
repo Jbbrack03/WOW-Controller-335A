@@ -92,9 +92,33 @@ void DrawOverlayBox(int x, int y, int w, int h, const OverlayAnimState* anim, ID
 }
 
 // ---- Controller Prompt (stub: renders button text) ----
-void DrawControllerPrompt(const std::string& button, int x, int y, unsigned int color, IDirect3DDevice9* dev) {
+void DrawControllerPrompt(const std::string& button, int x, int y, unsigned int color, IDirect3DDevice9* dev, const PromptAnimState* anim) {
+    // Animate prompt: scale up and glow if active/pressed
+    float scale = 1.0f;
+    unsigned int promptColor = color;
+    if (anim && anim->active) {
+        scale = 1.1f + 0.05f * sinf(anim->time * 6.0f); // pulse
+        unsigned int alpha = 0xFF;
+        // Add a soft glow effect by blending with FOCUS_GLOW
+        promptColor = (promptColor & 0x00FFFFFF) | (alpha << 24);
+    }
+    // Simulate scale by adjusting position (for text)
+    int sx = static_cast<int>(x - 8 * (scale - 1.0f));
+    int sy = static_cast<int>(y - 8 * (scale - 1.0f));
     // In production, replace with icon rendering
-    DrawTextLabel("[" + button + "]", x, y, color, dev);
+    DrawTextLabel("[" + button + "]", sx, sy, promptColor, dev);
+    // Optionally, draw a glow/halo (could use DrawRect or DrawFocusBorder for more effect)
+    if (anim && anim->active) {
+        DrawFocusBorder(sx - 2, sy - 2, 32, 32, OverlayColors::FOCUS_GLOW, dev, nullptr);
+    }
+}
+
+void DrawControllerPrompts(const std::vector<std::pair<std::string, PromptAnimState>>& prompts, int x, int y, int spacing, IDirect3DDevice9* dev) {
+    int cx = x;
+    for (const auto& p : prompts) {
+        DrawControllerPrompt(p.first, cx, y, OverlayColors::FOCUS, dev, &p.second);
+        cx += spacing;
+    }
 }
 
 #endif

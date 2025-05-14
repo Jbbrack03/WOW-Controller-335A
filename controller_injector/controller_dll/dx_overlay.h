@@ -49,7 +49,17 @@ void DrawTextLabel(const std::string& text, int x, int y, unsigned int color, ID
 void DrawFocusBorder(int x, int y, int w, int h, unsigned int color, IDirect3DDevice9* dev, const FocusAnimState* anim = nullptr);
 void DrawGoldBorder(int x, int y, int w, int h, int thickness, unsigned int color, IDirect3DDevice9* dev);
 void DrawOverlayBox(int x, int y, int w, int h, const OverlayAnimState* anim, IDirect3DDevice9* dev);
-void DrawControllerPrompt(const std::string& button, int x, int y, unsigned int color, IDirect3DDevice9* dev);
+// Animation state for controller prompt (e.g., glow or scale effect)
+struct PromptAnimState {
+    float time; // time in seconds since animation started
+    bool active; // true if button is pressed/highlighted
+    PromptAnimState() : time(0.0f), active(false) {}
+};
+
+void DrawControllerPrompt(const std::string& button, int x, int y, unsigned int color, IDirect3DDevice9* dev, const PromptAnimState* anim = nullptr);
+// Helper: Draw multiple prompts (A, B, X, Y, D-pad, triggers)
+void DrawControllerPrompts(const std::vector<std::pair<std::string, PromptAnimState>>& prompts, int x, int y, int spacing, IDirect3DDevice9* dev);
+
 #else
 // Stubs for Mac/Linux
 inline void DrawRect(int, int, int, int, unsigned int, void*) {}
