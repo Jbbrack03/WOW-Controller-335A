@@ -26,25 +26,30 @@ DevicePtr CreateTestD3DDevice(HWND hwnd) {
     return {dev, [](IDirect3DDevice9* d) { if (d) d->Release(); }};
 }
 
-// Test: Render overlay and focus border, check for device loss and no crash
-TEST(OverlayRenderTest, RenderOverlayAndFocus) {
+// Test: Render WoW-style overlay box with animation and controller prompt
+TEST(OverlayRenderTest, RenderWoWOverlayBoxAndPrompt) {
     HWND hwnd = GetConsoleWindow();
     auto dev = CreateTestD3DDevice(hwnd);
     ASSERT_TRUE(dev != nullptr);
     dev->Clear(0, nullptr, D3DCLEAR_TARGET, 0x222244, 1.0f, 0);
     dev->BeginScene();
-    // Draw overlay background
-    DrawRect(50, 50, 200, 100, OverlayColors::BACKGROUND, dev.get());
-    // Draw label
-    DrawTextLabel("Overlay Test", 70, 70, OverlayColors::TEXT, dev.get());
+    // Draw animated overlay box (fade-in, slide-in)
+    OverlayAnimState anim;
+    anim.time = 0.8f; // Simulate 80% through transition
+    anim.entering = true;
+    DrawOverlayBox(60, 60, 220, 120, &anim, dev.get());
+    // Draw label inside overlay
+    DrawTextLabel("WoW-style Overlay", 90, 90, OverlayColors::TEXT_GOLD, dev.get());
+    // Draw controller prompt (A button)
+    DrawControllerPrompt("A", 230, 160, OverlayColors::FOCUS, dev.get());
     // Draw animated focus border
-    FocusAnimState anim;
-    anim.time = 0.5f; // Simulate mid-pulse
-    DrawFocusBorder(50, 50, 200, 100, OverlayColors::FOCUS, dev.get(), &anim);
+    FocusAnimState focusAnim;
+    focusAnim.time = 0.7f;
+    DrawFocusBorder(60, 60, 220, 120, OverlayColors::FOCUS, dev.get(), &focusAnim);
     dev->EndScene();
-    // Present is not needed for offscreen test
     SUCCEED();
 }
+
 #endif
 
 // On non-Windows, this test is a stub.

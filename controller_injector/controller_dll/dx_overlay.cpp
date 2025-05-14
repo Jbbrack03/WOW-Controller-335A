@@ -55,4 +55,46 @@ void DrawFocusBorder(int x, int y, int w, int h, unsigned int color, IDirect3DDe
              borderColor, dev);
 }
 
+// ---- WoW-style Drop Shadow ----
+void DrawShadowRect(int x, int y, int w, int h, int offset, unsigned int color, IDirect3DDevice9* dev) {
+    // Draws a shadow rectangle offset from the main overlay
+    DrawRect(x + offset, y + offset, w, h, color, dev);
+}
+
+// ---- WoW-style Gold/Bronze Border ----
+void DrawGoldBorder(int x, int y, int w, int h, int thickness, unsigned int color, IDirect3DDevice9* dev) {
+    // Draws a border of the specified thickness
+    for (int i = 0; i < thickness; ++i) {
+        DrawRect(x - i, y - i, w + 2 * i, h + 2 * i, color, dev);
+    }
+}
+
+// ---- Animated Overlay Box (fade/slide in/out) ----
+void DrawOverlayBox(int x, int y, int w, int h, const OverlayAnimState* anim, IDirect3DDevice9* dev) {
+    // Fade and slide animation
+    float alpha = 1.0f;
+    int slideOffset = 0;
+    if (anim) {
+        float t = anim->time;
+        float fade = anim->entering ? (t < 1.0f ? t : 1.0f) : (t < 1.0f ? 1.0f - t : 0.0f);
+        alpha = fade;
+        slideOffset = static_cast<int>((1.0f - fade) * 30.0f); // Slide from right
+    }
+    // Compose alpha with background color
+    unsigned int bg = (OverlayColors::BACKGROUND & 0x00FFFFFF) | (static_cast<unsigned int>(alpha * ((OverlayColors::BACKGROUND >> 24) & 0xFF)) << 24);
+    unsigned int shadow = (OverlayColors::SHADOW & 0x00FFFFFF) | (static_cast<unsigned int>(alpha * ((OverlayColors::SHADOW >> 24) & 0xFF)) << 24);
+    // Draw drop shadow
+    DrawShadowRect(x + slideOffset, y + slideOffset, w, h, 6, shadow, dev);
+    // Draw background
+    DrawRect(x + slideOffset, y + slideOffset, w, h, bg, dev);
+    // Draw gold border
+    DrawGoldBorder(x + slideOffset, y + slideOffset, w, h, OverlayConfig::BORDER_THICKNESS, OverlayColors::BORDER_GOLD, dev);
+}
+
+// ---- Controller Prompt (stub: renders button text) ----
+void DrawControllerPrompt(const std::string& button, int x, int y, unsigned int color, IDirect3DDevice9* dev) {
+    // In production, replace with icon rendering
+    DrawTextLabel("[" + button + "]", x, y, color, dev);
+}
+
 #endif
